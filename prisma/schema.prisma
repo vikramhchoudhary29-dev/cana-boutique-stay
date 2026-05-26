@@ -1,0 +1,142 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Role {
+  ADMIN
+  STAFF
+  CUSTOMER
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  CHECKED_IN
+  CHECKED_OUT
+}
+
+enum PaymentStatus {
+  UNPAID
+  CREATED
+  PAID
+  FAILED
+  REFUNDED
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         Role     @default(CUSTOMER)
+  bookings     Booking[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model RoomType {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String
+  basePrice   Int
+  maxGuests   Int
+  sizeSqFt    Int?
+  imageUrl    String?
+  amenities   String
+  rooms       Room[]
+  bookings    Booking[]
+  seasonalRates SeasonalRate[]
+  images RoomImage[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Room {
+  id         String   @id @default(cuid())
+  number     String   @unique
+  floor      String?
+  roomTypeId String
+  roomType   RoomType @relation(fields: [roomTypeId], references: [id])
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Booking {
+  id             String        @id @default(cuid())
+  code           String        @unique
+  guestName      String
+  guestEmail     String
+  guestPhone     String
+  checkIn        DateTime
+  checkOut       DateTime
+  adults         Int
+  children       Int           @default(0)
+  roomsCount     Int           @default(1)
+  totalAmount    Int
+  status         BookingStatus @default(PENDING)
+  paymentStatus  PaymentStatus @default(UNPAID)
+  razorpayOrderId String?
+  razorpayPaymentId String?
+  specialRequest String?
+  userId         String?
+  user           User?         @relation(fields: [userId], references: [id])
+  roomTypeId     String
+  roomType       RoomType      @relation(fields: [roomTypeId], references: [id])
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+}
+
+model Enquiry {
+  id        String   @id @default(cuid())
+  name      String
+  phone     String
+  email     String?
+  message   String
+  source    String   @default("website")
+  createdAt DateTime @default(now())
+}
+model SeasonalRate {
+  id          String   @id @default(cuid())
+  name        String
+  startDate   DateTime
+  endDate     DateTime
+  seasonPrice Int
+  isActive    Boolean  @default(true)
+
+  roomTypeId  String
+  roomType    RoomType @relation(fields: [roomTypeId], references: [id])
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+model GalleryImage {
+  id        String   @id @default(cuid())
+  title     String
+  imageUrl  String
+  category  String   @default("general")
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+model RoomImage {
+  id         String   @id @default(cuid())
+  roomTypeId String
+  imageUrl   String
+  title      String
+  category   String   @default("room")
+  isPrimary  Boolean  @default(false)
+
+  roomType   RoomType @relation(fields: [roomTypeId], references: [id])
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}

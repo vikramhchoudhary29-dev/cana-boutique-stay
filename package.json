@@ -1,0 +1,47 @@
+{
+  "name": "goa-hotel-booking-starter",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "prisma generate && next build",
+    "start": "next start",
+    "lint": "next lint",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:studio": "prisma studio",
+    "db:seed": "tsx prisma/seed.ts"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.9.0",
+    "@supabase/supabase-js": "^2.106.2",
+    "bcryptjs": "latest",
+    "clsx": "latest",
+    "date-fns": "latest",
+    "lucide-react": "latest",
+    "next": "latest",
+    "next-auth": "latest",
+    "nodemailer": "^7.0.13",
+    "prisma": "^6.9.0",
+    "razorpay": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "recharts": "^3.8.1",
+    "swiper": "^12.1.4",
+    "zod": "latest"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "latest",
+    "@types/node": "latest",
+    "@types/nodemailer": "^8.0.0",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "autoprefixer": "^10.5.0",
+    "eslint": "latest",
+    "eslint-config-next": "latest",
+    "postcss": "^8.5.15",
+    "tailwindcss": "^3.4.17",
+    "tsx": "latest",
+    "typescript": "latest"
+  }
+}
