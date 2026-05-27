@@ -1,5 +1,5 @@
 "use client";
-
+import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -9,7 +9,7 @@ export function AdminShell({
   children: React.ReactNode;
 }) {
   const [open, setOpen] = useState(false);
-
+const pathname = usePathname();
   const navLinks = [
     { href: "/admin", label: "Dashboard", icon: "🏠" },
     { href: "/admin/bookings", label: "Bookings", icon: "📘" },
@@ -36,12 +36,12 @@ export function AdminShell({
               </Link>
 
               <button
-                type="button"
-                onClick={() => setOpen((value) => !value)}
-                className="rounded-xl bg-[#C49A28] px-4 py-2 text-sm font-black text-[#0F2E18] lg:hidden"
-              >
-                {open ? "Close" : "Menu"}
-              </button>
+  type="button"
+  onClick={() => setOpen(!open)}
+  className="relative z-[9999] rounded-xl bg-[#C49A28] px-4 py-2 text-sm font-black text-[#0F2E18] lg:hidden"
+>
+  {open ? "Close" : "Menu"}
+</button>
             </div>
 
             <nav
@@ -54,8 +54,11 @@ export function AdminShell({
                   key={link.href}
                   href={link.href}
                   onClick={() => setOpen(false)}
-                  className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-5 py-4 text-sm font-semibold text-white/75 transition hover:border-[#C49A28]/40 hover:bg-[#C49A28]/10 hover:text-white"
-                >
+className={`flex items-center gap-3 rounded-2xl border px-5 py-4 text-sm font-semibold transition ${
+  pathname === link.href
+    ? "border-[#C49A28]/40 bg-[#C49A28]/15 text-white shadow-lg shadow-[#C49A28]/10"
+    : "border-white/10 bg-white/5 text-white/75 hover:border-[#C49A28]/40 hover:bg-[#C49A28]/10 hover:text-white"
+}`}                >
                   <span>{link.icon}</span>
                   <span>{link.label}</span>
                 </Link>
