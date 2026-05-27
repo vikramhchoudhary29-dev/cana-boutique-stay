@@ -25,8 +25,7 @@ export function AdminCharts({
         <h2 className="mb-6 text-2xl font-black">Bookings & Revenue</h2>
 
         <div className="h-80">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={bookingData}>
+<ResponsiveContainer width="100%" height="100%">            <BarChart data={bookingData}>
               <XAxis dataKey="name" />
               <YAxis />
               <Tooltip />
