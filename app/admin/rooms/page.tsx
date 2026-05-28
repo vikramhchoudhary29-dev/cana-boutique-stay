@@ -60,29 +60,26 @@ export default async function AdminRoomsPage() {
         </button>
       </form>
 
-      <div className="grid gap-6">
+      <div className="grid gap-8">
         {roomTypes.map((room: any) => (
           <div
             key={room.id}
-            className="overflow-hidden rounded-[2rem] bg-white shadow-xl"
-          >
-            <div className="grid gap-6 lg:grid-cols-[320px_1fr]">
+className="overflow-hidden rounded-[2.5rem] border border-white/60 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-2xl"          >
+            <div className="grid gap-0 xl:grid-cols-[380px_1fr]">
               <div
-                className="min-h-72 bg-cover bg-center"
-                style={{
+className="min-h-[280px] bg-cover bg-center xl:min-h-full"                style={{
                   backgroundImage: `url('${room.imageUrl}')`,
                 }}
               />
 
-              <div className="p-6">
+              <div className="p-5 md:p-8">
                 <div className="flex flex-col justify-between gap-6 lg:flex-row">
                   <div>
                     <div className="text-xs font-bold uppercase tracking-[0.25em] text-[#8A6C10]">
                       Boutique Room
                     </div>
 
-                    <h2 className="mt-2 font-serif text-4xl">
-                      {room.name}
+<h2 className="mt-2 text-3xl font-black text-[#111] md:text-5xl">                      {room.name}
                     </h2>
 
                     <p className="mt-3 max-w-3xl text-[#6A7A5A]">
@@ -90,15 +87,14 @@ export default async function AdminRoomsPage() {
                     </p>
 
                     <div className="mt-5 flex flex-wrap gap-3">
-                      <span className="rounded-full bg-[#F8F5EF] px-4 py-2 text-sm font-bold text-[#1B4A2A]">
-                        {formatINR(room.basePrice)}
+                      <span className="rounded-full bg-[#F4F4F5] px-4 py-2 text-sm font-bold text-[#111]" >
                       </span>
 
-                      <span className="rounded-full bg-[#F8F5EF] px-4 py-2 text-sm font-bold text-[#1B4A2A]">
+                      <span className="rounded-full bg-[#F4F4F5] px-4 py-2 text-sm font-bold text-[#111]">
                         {room.maxGuests} guests
                       </span>
 
-                      <span className="rounded-full bg-[#F8F5EF] px-4 py-2 text-sm font-bold text-[#1B4A2A]">
+                      <span className="rounded-full bg-[#F4F4F5] px-4 py-2 text-sm font-bold text-[#111]">
                         {room.sizeSqFt ?? "-"} sq.ft.
                       </span>
                     </div>
@@ -124,15 +120,13 @@ export default async function AdminRoomsPage() {
 
                 <form
                   action={updateRoom}
-                  className="mt-8 grid gap-4 rounded-[2rem] bg-[#F8F5EF] p-5 md:grid-cols-2"
-                >
+className="mt-8 grid gap-4 rounded-[2rem] border border-slate-100 bg-[#FAFAFA] p-5 md:grid-cols-2"                >
                   <input type="hidden" name="roomId" value={room.id} />
 
                   <input
                     name="name"
                     defaultValue={room.name}
-                    className="rounded-2xl border p-4"
-                  />
+className="rounded-2xl border border-slate-200 bg-white p-4 outline-none transition focus:border-violet-500"                  />
 
                   <input
                     name="slug"

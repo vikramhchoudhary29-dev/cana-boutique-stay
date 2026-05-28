@@ -11,11 +11,14 @@ export default async function AdminPage() {
     confirmedBookings,
     cancelledBookings,
     paidBookings,
+    recentBookings,
   ] = await Promise.all([
     prisma.booking.count(),
 
     prisma.room.count({
-      where: { isActive: true },
+      where: {
+        isActive: true,
+      },
     }),
 
     prisma.booking.aggregate({
@@ -44,6 +47,16 @@ export default async function AdminPage() {
     prisma.booking.count({
       where: {
         paymentStatus: "PAID",
+      },
+    }),
+
+    prisma.booking.findMany({
+      take: 5,
+      orderBy: {
+        createdAt: "desc",
+      },
+      include: {
+        roomType: true,
       },
     }),
   ]);
@@ -163,7 +176,7 @@ export default async function AdminPage() {
         ))}
       </div>
 
-      {/* REVENUE CARD */}
+      {/* REVENUE + PREDICTION */}
 
       <div className="mt-6 grid gap-6 xl:grid-cols-[1.5fr_1fr]">
         <div className="rounded-[2rem] bg-white p-6 shadow-sm">
@@ -225,6 +238,146 @@ export default async function AdminPage() {
               Strong booking trend detected for North Goa season.
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* RECENT BOOKINGS */}
+
+      <div className="mt-8 rounded-[2rem] bg-white p-6 shadow-sm">
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="text-2xl font-bold text-[#111]">
+              Recent Bookings
+            </div>
+
+            <div className="mt-1 text-sm text-slate-500">
+              Latest guest reservations
+            </div>
+          </div>
+
+          <div className="rounded-full bg-[#F4F4F5] px-4 py-2 text-sm font-medium">
+            {recentBookings.length} Recent
+          </div>
+        </div>
+
+        {/* MOBILE CARDS */}
+
+        <div className="mt-6 grid gap-4 lg:hidden">
+          {recentBookings.map((booking) => (
+            <div
+              key={booking.id}
+              className="rounded-[1.5rem] border border-slate-100 bg-[#FAFAFA] p-5"
+            >
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <div className="text-lg font-bold">
+                    {booking.guestName}
+                  </div>
+
+                  <div className="mt-1 text-sm text-slate-500">
+                    {booking.roomType.name}
+                  </div>
+                </div>
+
+                <div
+                  className={`rounded-full px-3 py-1 text-xs font-bold ${
+                    booking.status === "CONFIRMED"
+                      ? "bg-green-100 text-green-700"
+                      : booking.status === "CANCELLED"
+                      ? "bg-red-100 text-red-700"
+                      : "bg-yellow-100 text-yellow-700"
+                  }`}
+                >
+                  {booking.status}
+                </div>
+              </div>
+
+              <div className="mt-5 flex items-center justify-between">
+                <div className="text-sm text-slate-500">
+                  {booking.checkIn.toDateString()}
+                </div>
+
+                <div className="text-xl font-black">
+                  {formatINR(booking.totalAmount)}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* DESKTOP TABLE */}
+
+        <div className="mt-6 hidden overflow-x-auto lg:block">
+          <table className="w-full text-left">
+            <thead>
+              <tr className="border-b border-slate-100">
+                <th className="p-4 text-sm font-semibold text-slate-500">
+                  Guest
+                </th>
+
+                <th className="p-4 text-sm font-semibold text-slate-500">
+                  Room
+                </th>
+
+                <th className="p-4 text-sm font-semibold text-slate-500">
+                  Date
+                </th>
+
+                <th className="p-4 text-sm font-semibold text-slate-500">
+                  Amount
+                </th>
+
+                <th className="p-4 text-sm font-semibold text-slate-500">
+                  Status
+                </th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {recentBookings.map((booking) => (
+                <tr
+                  key={booking.id}
+                  className="border-b border-slate-100 transition hover:bg-[#FAFAFA]"
+                >
+                  <td className="p-4">
+                    <div className="font-bold">
+                      {booking.guestName}
+                    </div>
+
+                    <div className="text-sm text-slate-500">
+                      {booking.guestEmail}
+                    </div>
+                  </td>
+
+                  <td className="p-4 font-medium">
+                    {booking.roomType.name}
+                  </td>
+
+                  <td className="p-4 text-sm">
+                    {booking.checkIn.toDateString()}
+                  </td>
+
+                  <td className="p-4 font-black">
+                    {formatINR(booking.totalAmount)}
+                  </td>
+
+                  <td className="p-4">
+                    <span
+                      className={`rounded-full px-4 py-2 text-xs font-bold ${
+                        booking.status === "CONFIRMED"
+                          ? "bg-green-100 text-green-700"
+                          : booking.status === "CANCELLED"
+                          ? "bg-red-100 text-red-700"
+                          : "bg-yellow-100 text-yellow-700"
+                      }`}
+                    >
+                      {booking.status}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
